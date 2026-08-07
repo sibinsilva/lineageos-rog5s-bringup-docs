@@ -5,14 +5,21 @@ This document records the exact 100% stock-verified display stack components and
 
 ---
 
+## Mandatory Verification Protocol Rules
+1. **Stock Binary Parity:** Every staged binary/library must match stock ROM dump MD5.
+2. **Build Tree Gating Audit:** Every staged binary/library MUST be cross-referenced against `rog5s-vendor.mk` (`PRODUCT_COPY_FILES`). Any module disabled/commented out in the build tree (such as `vendor.pixelworks.hardware.display.iris-service`) MUST NOT be manually staged into `OUT`, as starting disabled services breaks `init` and kills `adbd`.
+3. **No Monolithic Overrides:** Do not copy monolithic `manifest.xml` into `/vendor/etc/vintf/manifest/`. Allow AOSP to dynamically compile master VINTF manifests at build time.
+
+---
+
 ## Complete Staged Files & MD5 Verification Matrix
 
 ### 1. Display Daemons (Binaries)
-| Relative Path | Size | Stock Match | Description |
-|:---|:---:|:---:|:---|
-| `bin/hw/vendor.qti.hardware.display.composer-service` | 668,136 B | ✅ 100% | Stock QTI HWC & SDM Composer Service |
-| `bin/hw/vendor.qti.hardware.display.allocator-service` | 38,776 B | ✅ 100% | Stock QTI Gralloc Allocator HAL |
-| `bin/hw/vendor.pixelworks.hardware.display.iris-service` | 11,848 B | ✅ 100% | Stock Pixelworks Iris Display Processor |
+| Relative Path | Size | Stock Match | Build Gating Status | Description |
+|:---|:---:|:---:|:---:|:---|
+| `bin/hw/vendor.qti.hardware.display.composer-service` | 668,136 B | ✅ 100% | ✅ Active | Stock QTI HWC & SDM Composer Service |
+| `bin/hw/vendor.qti.hardware.display.allocator-service` | 38,776 B | ✅ 100% | ✅ Active | Stock QTI Gralloc Allocator HAL |
+| `bin/hw/vendor.pixelworks.hardware.display.iris-service` | — | — | ❌ DISABLED in `rog5s-vendor.mk` | Purged to prevent init crash loop |
 
 ---
 
@@ -52,7 +59,6 @@ This document records the exact 100% stock-verified display stack components and
 |:---|:---:|:---:|:---|
 | `etc/init/vendor.qti.hardware.display.composer-service.rc` | 324 B | ✅ 100% | Composer service init configuration |
 | `etc/init/vendor.qti.hardware.display.allocator-service.rc` | 236 B | ✅ 100% | Allocator service init configuration |
-| `etc/init/vendor.pixelworks.hardware.display.iris-service.rc` | 303 B | ✅ 100% | Pixelworks Iris service init configuration |
 
 ---
 
@@ -61,10 +67,4 @@ This document records the exact 100% stock-verified display stack components and
 |:---|:---:|:---:|:---|
 | `etc/vintf/manifest/vendor.qti.hardware.display.composer-service.xml` | 2,953 B | ✅ 100% | Composer service VINTF manifest |
 | `etc/vintf/manifest/vendor.qti.hardware.display.allocator-service.xml` | 2,203 B | ✅ 100% | Allocator service VINTF manifest |
-| `etc/vintf/manifest/vendor.pixelworks.hardware.display.iris-service.xml` | 355 B | ✅ 100% | Iris service VINTF manifest |
 | `etc/vintf/manifest/android.hardware.graphics.mapper-impl-qti-display.xml` | 2,226 B | ✅ 100% | Stock Mapper 3.0/4.0 VINTF manifest |
-
----
-
-> [!NOTE]
-> All experimental VINTF fragments and monolithic overrides added during investigation have been purged. The AOSP VINTF compiler freshly generates `/vendor/etc/vintf/manifest.xml` directly from device tree definitions.
