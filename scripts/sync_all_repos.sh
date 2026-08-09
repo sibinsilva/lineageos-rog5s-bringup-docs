@@ -8,7 +8,7 @@ set -eo pipefail
 BUILD_ROOT="/mnt/android-build"
 
 echo "=========================================================="
-echo "📡 Checking Git Status & Syncing All Core Repositories..."
+echo "📡 Checking Git Status & Syncing Custom Repositories..."
 echo "=========================================================="
 
 REPOS=(
@@ -17,7 +17,6 @@ REPOS=(
     "device/asus/rog5"
     "vendor/asus/rog5s"
     "kernel/asus/sm8350"
-    "hardware/qcom-caf/sm8350/display"
 )
 
 for REPO in "${REPOS[@]}"; do
