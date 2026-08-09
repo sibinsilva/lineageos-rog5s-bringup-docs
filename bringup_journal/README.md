@@ -17,6 +17,9 @@ This directory documents the step-by-step technical journey, architectural decis
 3. **[`03_SECURITY_AND_STANDARDIZATION_AUDIT.md`](./03_SECURITY_AND_STANDARDIZATION_AUDIT.md):**  
    Audit of LineageOS code standards, multi-device naming conventions, and security sanitization (0 secrets/keys committed).
 
+4. **[`04_STEP_BY_STEP_LINEAGE_BRINGUP_WORKFLOW.md`](./04_STEP_BY_STEP_LINEAGE_BRINGUP_WORKFLOW.md):**  
+   Step-by-step master bringup workflow detailing Phases 1 through 8 from stock firmware extraction to official commonization release.
+
 ---
 
 ## 🛡️ Privacy & Security Compliance
