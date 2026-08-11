@@ -33,8 +33,17 @@ vendor.display.config@1.0.vendor
 vendor.display.config@2.0.vendor
 ```
 
-### Correct fix for `composer@2.4.so` not found:
-Stage `android.hardware.graphics.composer@2.4.so` as a **proprietary prebuilt blob** in the vendor tree via `PRODUCT_COPY_FILES` — NOT via `PRODUCT_PACKAGES += android.hardware.graphics.composer@2.4.vendor`.
+### Phase 1: Critical Display & Boot Stack Fixes (In Progress)
+
+#### 1. Display Composer Kati Collision and Crashing
+- **Root Cause:** A Kati build collision occurred between the AOSP generic `android.hardware.graphics.composer@2.4.so` and the proprietary Asus/QTI blob when added via `PRODUCT_COPY_FILES`.
+- **Architectural Solution (Completed):**
+  - Downloaded statically-linked `patchelf` (`0.17.2`).
+  - Used `patchelf` on `vendor.qti.hardware.display.composer-service` and `vendor.qti.hardware.display.composer@3.0.so` to modify their `NEEDED` ELF dependencies from `android.hardware.graphics.composer@2.4.so` to `android.hardware.graphics.composer@2.4-qti.so`.
+  - Renamed the proprietary blob to `android.hardware.graphics.composer@2.4-qti.so`.
+  - Created a local `Android.bp` in `vendor/asus/rog5s/proprietary/vendor/lib64/` to expose `android.hardware.graphics.composer@2.4-qti` as a `cc_prebuilt_library_shared` module.
+  - Added `android.hardware.graphics.composer@2.4-qti` to `PRODUCT_PACKAGES` in `device.mk`.
+  - **Result:** This safely bypasses Kati install path collisions, leaving the AOSP library in place for generic dependents, while forcing the proprietary composer to load the vendor-specific blob. Build (`m vendorimage`) completed successfully.
 
 ---
 
